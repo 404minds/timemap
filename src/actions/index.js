@@ -11,7 +11,6 @@ const SHAPES_URL = urlFromEnv("SHAPES_EXT");
 
 const domainMsg = (domainType) =>
   `Something went wrong fetching ${domainType}. Check the URL or try disabling them in the config file.`;
-
 export function fetchDomain() {
   const notifications = [];
 
@@ -121,6 +120,11 @@ export function fetchDomain() {
         }
         dispatch(toggleFetchingDomain());
         dispatch(setInitialCategories(result.associations));
+        dispatch(
+          setInitialMarks(
+            result.associations.filter((ass) => ass.mode === "MARKER")
+          )
+        );
         dispatch(setInitialShapes(result.shapes));
         return result;
       })
@@ -242,6 +246,13 @@ export const SET_INITIAL_CATEGORIES = "SET_INITIAL_CATEGORIES";
 export function setInitialCategories(values) {
   return {
     type: SET_INITIAL_CATEGORIES,
+    values,
+  };
+}
+export const SET_INITIAL_MARKS = "SET_INITIAL_MARKS";
+export function setInitialMarks(values) {
+  return {
+    type: SET_INITIAL_MARKS,
     values,
   };
 }

@@ -1,35 +1,43 @@
 import React from "react";
 
-const MapDefsMarkers = () => (
-  <svg>
-    <defs>
-      <marker
-        id="arrow"
-        viewBox="0 0 6 6"
-        refX="3"
-        refY="3"
-        markerWidth="6"
-        markerHeight="6"
-        orient="auto"
-      >
-        <path d="M0,3v-3l6,3l-6,3z" style={{ fill: "red" }} />
-      </marker>
-      <marker
-        id="arrow-off"
-        viewBox="0 0 6 6"
-        refX="3"
-        refY="3"
-        markerWidth="6"
-        markerHeight="6"
-        orient="auto"
-      >
-        <path
-          d="M0,3v-3l6,3l-6,3z"
-          style={{ fill: "black", fillOpacity: 0.2 }}
-        />
-      </marker>
-    </defs>
-  </svg>
-);
+var date = new Date();
+var day = date.getDate();
+day = day < 10 ? "0" + day : day;
+var month = date.getMonth() + 1;
+month = month < 10 ? "0" + month : month;
+var year = date.getFullYear();
+var today = day + "/" + month + "/" + year;
+
+const MapDefsMarkers = ({ markers, projectPoint, narrative }) => {
+  if (markers === undefined) return null;
+  return (
+    <>
+      {markers.map((marker) => {
+        const { x, y } = projectPoint([marker.latitude, marker.longitude]);
+        if (marker.startdate <= today) {
+          return (
+            <svg>
+              <g
+                className={`location-event ${narrative ? "no-hover" : ""}`}
+                transform={`translate(${x}, ${y})`}
+              >
+                {/* <circle cx="0" cy="0" r="10" stroke="black" stroke-width="2"  */}
+                {/* fill= {marker.enddate>=today?"yellow":"none"} stroke-opacity="0.8" fill-opacity="0.8"/> */}
+                <rect
+                  width="20"
+                  height="20"
+                  stroke="blue"
+                  stroke-width="2"
+                  fill={marker.enddate >= today ? "yellow" : "none"}
+                  fill-opacity="0.8"
+                />
+              </g>
+            </svg>
+          );
+        } else return null;
+      })}
+    </>
+  );
+};
 
 export default MapDefsMarkers;

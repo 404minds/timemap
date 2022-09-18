@@ -84,10 +84,10 @@ const initial = {
         contentHeight: isSmallLaptop ? 160 : 200,
         width_controls: 100,
       },
-      range: [new Date(2001, 2, 23, 12), new Date(2021, 2, 23, 12)],
+      range: [new Date(2014, 2, 23, 12), new Date(2021, 2, 23, 12)],
       rangeLimits: [new Date(1, 1, 1, 1), new Date()],
       zoomLevels: copy[language].timeline.zoomLevels || [
-        { label: "20 years", duration: 10512000 },
+        // { label: "20 years", duration: 10512000 },
         { label: "2 years", duration: 1051200 },
         { label: "3 months", duration: 129600 },
         { label: "3 days", duration: 4320 },
@@ -105,9 +105,10 @@ const initial = {
       isShowingSites: true,
     },
     cover: {
-      title: "project title",
+      title: "Time map",
       description:
-        "A description of the project goes here.\n\nThis description may contain markdown.\n\n# This is a large title, for example.\n\n## Whereas this is a slightly smaller title.\n\nCheck out docs/custom-covers.md in the [Timemap GitHub repo](https://github.com/forensic-architecture/timemap) for more information around how to specify custom covers.",
+        "Exploration, monitoring and classification of incidents in time and space.\n\nMaya and Adrian(FullStack Web Developer).\n\n# RECORD ANY EVENTS YOU WANT",
+      // "A description of the project goes here.\n\nThis description may contain markdown.\n\n# This is a large title, for example.\n\n## Whereas this is a slightly smaller title.\n\nCheck out docs/custom-covers.md in the [Timemap GitHub repo](https://github.com/forensic-architecture/timemap) for more information around how to specify custom covers.",
       exploreButton: "EXPLORE",
     },
     toolbar: {
@@ -178,7 +179,7 @@ const initial = {
     },
     card: {
       layout: {
-        template: "basic",
+        template: "sourced",
       },
     },
     coloring: {
@@ -197,11 +198,13 @@ const initial = {
     USE_COVER: false,
     USE_ASSOCIATIONS: false,
     USE_SITES: false,
-    USE_SOURCES: false,
+    USE_SOURCES: true,
     USE_REGIONS: false,
     GRAPH_NONLOCATED: false,
     HIGHLIGHT_GROUPS: false,
+    USE_CATEGORIES: true,
   },
+  marks: {},
 };
 
 let appStore;

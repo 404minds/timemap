@@ -3,9 +3,14 @@ import { connect } from "react-redux";
 import { generateCardLayout, Card } from "./Card";
 
 import * as selectors from "../../selectors";
-import { getFilterIdxFromColorSet } from "../../common/utilities";
+import {
+  getFilterIdxFromColorSet,
+  isValidHttpUrl,
+  typeForPath,
+} from "../../common/utilities";
 import copy from "../../common/data/copy.json";
 import hash from "object-hash";
+const internalDomains = ["pad.ma"];
 
 class CardStack extends React.Component {
   constructor() {
@@ -54,13 +59,84 @@ class CardStack extends React.Component {
     animateScroll();
   }
 
+  // renderCards(events, selections) {
+  //   // if no selections provided, select all
+  //   console.log(events)
+  //   if (!selections) {
+  //     selections = events.map((e) => true);
+  //   }
+  //   this.refs = [];
+
+  //   const generateTemplate =
+  //   // generateCardLayout["sourced"];
+  //   generateCardLayout[this.props.cardUI.layout.template];
+
+  //   return events.map((event, idx) => {
+  //     const thisRef = React.createRef();
+  //     this.refs[idx] = thisRef;
+
+  //     const content = generateTemplate({
+  //       event,
+  //       colors: this.props.colors,
+  //       coloringSet: this.props.coloringSet,
+  //       getFilterIdxFromColorSet,
+  //     });
+  //     console.log(content)
+  //     return (
+  //       <Card
+  //         key={hash(content)}
+  //         content={content}
+  //         language={this.props.language}
+  //         isLoading={this.props.isLoading}
+  //         isSelected={selections[idx]}
+  //       />
+  //     );
+  //   });
+  // }
+
+  renderSourcePath = (path, index) => {
+    if (!isValidHttpUrl(path)) return "";
+
+    if (internalDomains.some((domain) => path?.includes(domain))) {
+      let typeOfPath = typeForPath(path);
+      switch (typeOfPath) {
+        case "Video":
+          return (
+            <a
+              className="c-source"
+              target="_default"
+              onClick={() =>
+                this.setState({
+                  showInternalSource: true,
+                  selectedSource: path,
+                })
+              }
+            >
+              Sources {index + 1}
+            </a>
+          );
+        default:
+          return (
+            <a className="c-source" target="_default" href={path}>
+              Sources {index + 1}
+            </a>
+          );
+      }
+    } else
+      return (
+        <a className="c-source" target="_default" href={path}>
+          Sources {index + 1}
+        </a>
+      );
+  };
+
   renderCards(events, selections) {
     // if no selections provided, select all
     if (!selections) {
       selections = events.map((e) => true);
     }
     this.refs = [];
-
+    console.log("events", events);
     const generateTemplate =
       generateCardLayout[this.props.cardUI.layout.template];
 
@@ -68,21 +144,97 @@ class CardStack extends React.Component {
       const thisRef = React.createRef();
       this.refs[idx] = thisRef;
 
-      const content = generateTemplate({
-        event,
-        colors: this.props.colors,
-        coloringSet: this.props.coloringSet,
-        getFilterIdxFromColorSet,
-      });
-
       return (
-        <Card
-          key={hash(content)}
-          content={content}
-          language={this.props.language}
-          isLoading={this.props.isLoading}
-          isSelected={selections[idx]}
-        />
+        <>
+          <div className="card-row">
+            <div className="event-card selected">
+              <div className="card-row">
+                <div className="card-cell">
+                  <h4>Incident Date</h4>
+                  {new Date(event.date).toDateString()}
+                </div>
+                <div className="card-cell">
+                  <h4>Location</h4>
+                  {event?.location}
+                </div>
+              </div>
+              <div className="card-row">
+                <div className="card-cell">
+                  <h4>Summary</h4>
+                  {event?.description}
+                </div>
+              </div>
+              <div className="card-row">
+                <div className="card-cell">
+                  <h4>Sources</h4>
+                  {event?.sources?.map((eachSource) => {
+                    return (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirections: "row",
+                          gap: 10,
+                          alignItems: "center",
+                          marginTop: 5,
+                        }}
+                      >
+                        {/* <button style={{ "border-radius": 12 }} onclick=")"> */}
+                        {eachSource?.paths?.map((eachPath, i) => (
+                          <a
+                            target="blank"
+                            href={eachPath}
+                            style={{
+                              margin: "3px",
+                              "border-radius": 12,
+                              border: "2px solid #808080",
+                              padding: "3px",
+                            }}
+                          >
+                            {/* {eachSource?.id} */}
+                            {"Source" + (i + 1)}
+                            {/* {eachSource?.id + "-" + (i+1)} */}
+                          </a>
+                        ))}
+                        {/* <a target="blank" href={"https://github.com/AdrianBotteon/TimemapForMyFriend.git"} style={{ "border-radius": 6, "border": "1px solid black" }}>
+                          {eachSource?.id}
+                          {eachSource?.paths} */}
+
+                        {/* <span>{eachSource?.id}</span> */}
+                        {/* <div
+                            style={{
+                              display: "flex",
+                              flexDirections: "row",
+                              gap: 10,
+                              alignItems: "center",
+                              marginTop: 5,
+                            }}
+                          >
+                            {eachSource?.paths?.map((eachPath, i) =>
+                              this.renderSourcePath(eachPath, i)
+                            )}
+                          </div> */}
+                        {/* </a> */}
+                        {/* </button> */}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <Card
+            ref={thisRef}
+            content={generateTemplate({
+              event,
+              colors: this.props.colors,
+              coloringSet: this.props.coloringSet,
+              getFilterIdxFromColorSet,
+            })}
+            language={this.props.language}
+            isLoading={this.props.isLoading}
+            isSelected={selections[idx]}
+          /> */}
+        </>
       );
     });
   }
