@@ -136,7 +136,6 @@ class CardStack extends React.Component {
       selections = events.map((e) => true);
     }
     this.refs = [];
-    console.log("events", events);
     const generateTemplate =
       generateCardLayout[this.props.cardUI.layout.template];
 

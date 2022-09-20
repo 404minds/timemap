@@ -61,7 +61,7 @@ class Timeline extends React.Component {
         scaleY: this.makeScaleY(
           nextProps.activeCategories,
           trackHeight,
-          marginTop
+          marginTop,
         ),
       });
     }
@@ -102,7 +102,7 @@ class Timeline extends React.Component {
     const { features } = this.props;
     if (features.GRAPH_NONLOCATED && features.GRAPH_NONLOCATED.categories) {
       categories = categories.filter(
-        (cat) => !features.GRAPH_NONLOCATED.categories.includes(cat.title)
+        (cat) => !features.GRAPH_NONLOCATED.categories.includes(cat.title),
       );
     }
 
@@ -158,7 +158,7 @@ class Timeline extends React.Component {
         },
         () => {
           this.setState({ scaleX: this.makeScaleX() });
-        }
+        },
       );
     }
   }
@@ -171,7 +171,7 @@ class Timeline extends React.Component {
     const extent = this.getTimeScaleExtent();
     const newCentralTime = timeMinute.offset(
       this.state.scaleX.domain()[0],
-      extent
+      extent,
     );
 
     // if forward
@@ -216,7 +216,7 @@ class Timeline extends React.Component {
     const extent = this.getTimeScaleExtent();
     const newCentralTime = timeMinute.offset(
       this.state.scaleX.domain()[0],
-      extent / 2
+      extent / 2,
     );
     const { rangeLimits } = this.props.app.timeline;
 
@@ -246,7 +246,7 @@ class Timeline extends React.Component {
       () => {
         // this.props.actions.updateTicks(15);
         this.props.methods.onUpdateTimerange(this.state.timerange);
-      }
+      },
     );
   }
 
@@ -265,7 +265,7 @@ class Timeline extends React.Component {
       },
       () => {
         this.toggleTransition(false);
-      }
+      },
     );
   }
 
@@ -349,7 +349,7 @@ class Timeline extends React.Component {
   onSelect(event) {
     if (this.props.features.ZOOM_TO_TIMEFRAME_ON_TIMELINE_CLICK) {
       const timeframe = Math.floor(
-        this.props.features.ZOOM_TO_TIMEFRAME_ON_TIMELINE_CLICK / 2
+        this.props.features.ZOOM_TO_TIMEFRAME_ON_TIMELINE_CLICK / 2,
       );
       const start = timeMinute.offset(event.datetime, -timeframe);
       const end = timeMinute.offset(event.datetime, timeframe);
@@ -376,7 +376,7 @@ class Timeline extends React.Component {
 
     const title = copy[this.props.app.language].timeline.info.replace(
       "%n",
-      domain.eventCountInTimeRange
+      domain.eventCountInTimeRange,
     );
 
     return (
@@ -515,7 +515,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       { setLoading, setNotLoading, updateTicks },
-      dispatch
+      dispatch,
     ),
   };
 }

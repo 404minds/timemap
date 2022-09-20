@@ -19,11 +19,11 @@ import { AVAILABLE_SHAPES } from "../../../common/constants";
 function renderDot(event, styles, props) {
   const colorPercentages = calculateColorPercentages(
     [event],
-    props.coloringSet
+    props.coloringSet,
   );
   return (
     <g
-      key={event.id}
+      key={`${event.id}-${props.y}`}
       className="timeline-event"
       onClick={props.onSelect}
       transform={`translate(${props.x}, ${props.y})`}
@@ -32,7 +32,7 @@ function renderDot(event, styles, props) {
         radius={props.eventRadius}
         colorPercentMap={zipColorsToPercentages(
           props.filterColors,
-          colorPercentages
+          colorPercentages,
         )}
         styles={{
           ...styles,
@@ -206,7 +206,7 @@ const TimelineEvents = ({
           ? getHighlights(
               event.filters[
                 features.HIGHLIGHT_GROUPS.filterIndexIndicatingGroup
-              ]
+              ],
             )
           : [],
         features,

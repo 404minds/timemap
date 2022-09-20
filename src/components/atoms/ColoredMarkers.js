@@ -2,7 +2,6 @@ import React from "react";
 import { getCoordinatesForPercent } from "../../common/utilities";
 
 function ColoredMarkers({ radius, colorPercentMap, styles, className }) {
-  console.log("colorPercentMap", colorPercentMap); //red color ab
   let cumulativeAngleSweep = 0;
   const colors = Object.keys(colorPercentMap);
 
@@ -13,14 +12,14 @@ function ColoredMarkers({ radius, colorPercentMap, styles, className }) {
 
         const [startX, startY] = getCoordinatesForPercent(
           radius,
-          cumulativeAngleSweep
+          cumulativeAngleSweep,
         );
 
         cumulativeAngleSweep += colorPercent;
 
         const [endX, endY] = getCoordinatesForPercent(
           radius,
-          cumulativeAngleSweep
+          cumulativeAngleSweep,
         );
         // if the slices are less than 2, take the long arc
         const largeArcFlag = colors.length === 1 || colorPercent > 0.5 ? 1 : 0;

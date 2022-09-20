@@ -23,7 +23,7 @@ const TimelineMarkers = ({
     function renderCircle(y) {
       return (
         <circle
-          key={hash(event)}
+          key={`marker-${event.id}-${y}`}
           className="timeline-marker"
           cx={0}
           cy={0}
@@ -67,7 +67,7 @@ const TimelineMarkers = ({
       (features.GRAPH_NONLOCATED && event.projectOffset !== -1);
 
     const evShadows = getEventCategories(event, categories).map((cat) =>
-      getEventY({ ...event, category: cat })
+      getEventY({ ...event, category: cat }),
     );
 
     function renderMarkerForEvent(y) {
