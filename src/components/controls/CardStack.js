@@ -1,15 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
+import dayjs from "dayjs";
 import { generateCardLayout, Card } from "./Card";
 
 import * as selectors from "../../selectors";
-import {
-  getFilterIdxFromColorSet,
-  isValidHttpUrl,
-  typeForPath,
-} from "../../common/utilities";
+import { isValidHttpUrl, typeForPath } from "../../common/utilities";
 import copy from "../../common/data/copy.json";
-import hash from "object-hash";
 const internalDomains = ["pad.ma"];
 
 class CardStack extends React.Component {
@@ -152,6 +148,12 @@ class CardStack extends React.Component {
                   <h4>Incident Date</h4>
                   {new Date(event.date).toDateString()}
                 </div>
+                {event.time && (
+                  <div className="card-cell">
+                    <h4>Incident Time</h4>
+                    {dayjs(event.time, "HH:mm").format("hh:mm a")}
+                  </div>
+                )}
                 <div className="card-cell">
                   <h4>Location</h4>
                   {event?.location}
