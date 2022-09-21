@@ -17,6 +17,15 @@ import Markers from "./atoms/Markers.js";
 import Events from "./atoms/Events.js";
 import Categories from "./Categories";
 
+const searchAttributes = ["description", "location"];
+const getFilteredEvents = (events, queryString = "") => {
+  return events.filter((event) =>
+    searchAttributes.some((attribute) =>
+      event[attribute].toLowerCase().includes(queryString.toLowerCase()),
+    ),
+  );
+};
+
 class Timeline extends React.Component {
   constructor(props) {
     super(props);
@@ -451,7 +460,10 @@ class Timeline extends React.Component {
                 eventRadius={this.props.ui.eventRadius}
               />
               <Events
-                events={this.props.domain.events}
+                events={getFilteredEvents(
+                  this.props.domain.events,
+                  this.props.app.searchQuery,
+                )}
                 projects={this.props.domain.projects}
                 categories={categories}
                 styleDatetime={this.styleDatetime}
@@ -498,6 +510,7 @@ function mapStateToProps(state) {
       selected: state.app.selected,
       language: state.app.language,
       timeline: state.app.timeline,
+      searchQuery: state.app.searchQuery,
       narrative: state.app.associations.narrative,
       coloringSet: state.app.associations.coloringSet,
     },

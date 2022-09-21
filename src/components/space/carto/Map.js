@@ -34,6 +34,15 @@ import {
 const supportedMapboxMap = ["streets", "satellite"];
 const defaultToken = "your_token";
 
+const searchAttributes = ["description", "location"];
+const getFilteredEvents = (events = [], queryString = "") => {
+  return events.filter((event) =>
+    searchAttributes.some((attribute) =>
+      event[attribute].toLowerCase().includes(queryString.toLowerCase()),
+    ),
+  );
+};
+
 class Map extends React.Component {
   constructor() {
     super();
@@ -97,7 +106,7 @@ class Map extends React.Component {
               pan: {
                 duration: 0.7,
               },
-            }
+            },
           );
         }
       }
@@ -245,7 +254,7 @@ class Map extends React.Component {
         const children = this.superclusterIndex.getLeaves(
           clusterId,
           Infinity,
-          0
+          0,
         );
         return mapClustersToLocations(children, this.props.domain.locations);
       } catch (err) {
@@ -307,12 +316,12 @@ class Map extends React.Component {
   onClusterSelect({ id, latitude, longitude }) {
     const expansionZoom = Math.max(
       this.superclusterIndex.getClusterExpansionZoom(parseInt(id)),
-      this.superclusterIndex.options.minZoom
+      this.superclusterIndex.options.minZoom,
     );
     const zoomLevelsToSkip = 2;
     const zoomToFly = Math.max(
       expansionZoom + zoomLevelsToSkip,
-      this.props.app.cluster.maxZoom
+      this.props.app.cluster.maxZoom,
     );
     this.map.flyTo(new L.LatLng(latitude, longitude), zoomToFly);
   }
@@ -412,11 +421,12 @@ class Map extends React.Component {
     */
 
     const individualClusters = this.state.clusters.filter(
-      (cl) => !cl.properties.cluster
+      (cl) => !cl.properties.cluster,
     );
+    console.log("this.props.domain.locations: ", this.props.domain.locations);
     const filteredLocations = mapClustersToLocations(
       individualClusters,
-      this.props.domain.locations
+      this.props.domain.locations,
     );
 
     return (
@@ -442,7 +452,7 @@ class Map extends React.Component {
 
   renderClusters() {
     const allClusters = this.state.clusters.filter(
-      (cl) => cl.properties.cluster
+      (cl) => cl.properties.cluster,
     );
     return (
       <Clusters
@@ -485,7 +495,7 @@ class Map extends React.Component {
           longitude: String(coordinates[0]),
           radius: calcClusterSize(
             cl.properties.point_count,
-            totalClusterPoints
+            totalClusterPoints,
           ),
         });
       }
@@ -575,6 +585,7 @@ function mapStateToProps(state) {
         isFetchingDomain: state.app.flags.isFetchingDomain,
       },
       markers: state.app.markers,
+      searchQuery: state.app.searchQuery,
     },
     ui: {
       tiles: selectors.getTiles(state),
