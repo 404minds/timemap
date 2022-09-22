@@ -27,8 +27,7 @@ class TimelineAxis extends React.Component {
       fstFmt = "";
     } else {
       sndFmt = "%d %b";
-      // fstFmt = "%H:%M";
-      fstFmt = "";
+      fstFmt = "%H:%M";
     }
 
     const { marginTop, contentHeight } = this.props.dims;
