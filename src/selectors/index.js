@@ -14,11 +14,11 @@ import { ASSOCIATION_MODES, SHAPE } from "../common/constants";
 export const getEvents = (state) => state.domain.events;
 export const getCategories = (state) =>
   state.domain.associations.filter(
-    (item) => item.mode === ASSOCIATION_MODES.CATEGORY
+    (item) => item.mode === ASSOCIATION_MODES.CATEGORY,
   );
 export const getNarratives = (state) =>
   state.domain.associations.filter(
-    (item) => item.mode === ASSOCIATION_MODES.NARRATIVE
+    (item) => item.mode === ASSOCIATION_MODES.NARRATIVE,
   );
 export const getActiveNarrative = (state) => state.app.associations.narrative;
 export const getSelected = (state) => state.app.selected;
@@ -28,7 +28,7 @@ export const getRegions = (state) => state.domain.regions;
 export const getShapes = (state) => state.domain.shapes;
 export const getFilters = (state) =>
   state.domain.associations.filter(
-    (item) => item.mode === ASSOCIATION_MODES.FILTER
+    (item) => item.mode === ASSOCIATION_MODES.FILTER,
   );
 export const getNotifications = (state) => state.domain.notifications;
 export const getActiveFilters = (state) => state.app.associations.filters;
@@ -41,6 +41,7 @@ export const selectNarrative = (state) => state.app.associations.narrative;
 export const getFeatures = (state) => state.features;
 export const getEventRadius = (state) => state.ui.eventRadius;
 export const getTiles = (state) => state.ui.tiles.current;
+export const getSearchQuery = (state) => state.app.searchQuery;
 
 export const selectSites = createSelector(
   [getSites, getFeatures],
@@ -49,7 +50,7 @@ export const selectSites = createSelector(
       return sites.filter((s) => !!+s.enabled);
     }
     return [];
-  }
+  },
 );
 
 export const selectSources = createSelector(
@@ -57,7 +58,7 @@ export const selectSources = createSelector(
   (sources, features) => {
     if (features.USE_SOURCES) return sources;
     return {};
-  }
+  },
 );
 
 export const selectRegions = createSelector(
@@ -65,8 +66,17 @@ export const selectRegions = createSelector(
   (regions, features) => {
     if (features.USE_REGIONS) return regions;
     return [];
-  }
+  },
 );
+
+const searchAttributes = ["description", "location"];
+const getFilteredEvents = (events = [], queryString = "") => {
+  return events.filter((event) =>
+    searchAttributes.some((attribute) =>
+      event[attribute].toLowerCase().includes(queryString.toLowerCase()),
+    ),
+  );
+};
 
 /**
  * Of all available events, selects those that
@@ -82,6 +92,7 @@ export const selectEvents = createSelector(
     getActiveShapes,
     getTimeRange,
     getFeatures,
+    getSearchQuery,
   ],
   (
     events,
@@ -89,7 +100,8 @@ export const selectEvents = createSelector(
     activeCategories,
     activeShapes,
     timeRange,
-    features
+    features,
+    searchQuery,
   ) => {
     return events.reduce((acc, event) => {
       const isMatchingFilter =
@@ -97,7 +109,7 @@ export const selectEvents = createSelector(
           event.associations
             .filter((a) => a.mode === ASSOCIATION_MODES.FILTER)
             .map((association) =>
-              activeFilters.includes(createFilterPathString(association))
+              activeFilters.includes(createFilterPathString(association)),
             )
             .some((s) => s)) ||
         activeFilters.length === 0;
@@ -124,9 +136,9 @@ export const selectEvents = createSelector(
           acc[event.id] = { ...event };
         }
       }
-      return acc;
+      return getFilteredEvents(acc, searchQuery);
     }, []);
-  }
+  },
 );
 
 /**
@@ -138,8 +150,8 @@ export const selectEventCountInTimeRange = createSelector(
   (events, timeRange) =>
     events.reduce(
       (acc, curr) => (curr.latitude && curr.longitude ? acc + 1 : acc),
-      0
-    )
+      0,
+    ),
 );
 
 /**
@@ -159,7 +171,7 @@ export const selectNarratives = createSelector(
     events.forEach((evt) => {
       evt.associations.forEach((association) => {
         const foundNarrative = narrativesMeta.find(
-          (narr) => narr.id === association
+          (narr) => narr.id === association,
         );
         if (foundNarrative) {
           const { id: narrId } = foundNarrative;
@@ -180,7 +192,7 @@ export const selectNarratives = createSelector(
       steps.sort((a, b) => a.datetime - b.datetime);
 
       const existingAssociatedNarrative = narrativesMeta.find(
-        (n) => n.id === key
+        (n) => n.id === key,
       );
 
       if (existingAssociatedNarrative) {
@@ -193,7 +205,7 @@ export const selectNarratives = createSelector(
     // Return narratives in original order
     // + filter those that are undefined
     return narrativesMeta.map((n) => narratives[n.id]).filter((d) => d);
-  }
+  },
 );
 
 /** We iterate through narrative.steps and check the idx there against the selected array and we return the idx */
@@ -212,7 +224,7 @@ export const selectNarrativeIdx = createSelector(
       }
     });
     return selectedIdx;
-  }
+  },
 );
 
 /** Aggregate information about the narrative and the current step into
@@ -220,7 +232,7 @@ export const selectNarrativeIdx = createSelector(
  */
 export const selectActiveNarrative = createSelector(
   [getActiveNarrative, selectNarrativeIdx],
-  (narrative, current) => (narrative ? { ...narrative, current } : null)
+  (narrative, current) => (narrative ? { ...narrative, current } : null),
 );
 
 /**
@@ -279,11 +291,11 @@ export const selectEventsWithProjects = createSelector(
         if (projects.hasOwnProperty(project)) {
           projects[project].start = dateMin(
             projects[project].start,
-            event.datetime
+            event.datetime,
           );
           projects[project].end = dateMax(
             projects[project].end,
-            event.datetime
+            event.datetime,
           );
         } else {
           projects[project] = {
@@ -326,14 +338,14 @@ export const selectEventsWithProjects = createSelector(
     }, {});
 
     return [events, projectsWithOffset];
-  }
+  },
 );
 
 export const selectStackedEvents = createSelector(
   [selectEventsWithProjects],
   (eventsWithProjects) => {
     return eventsWithProjects[0];
-  }
+  },
 );
 
 export const selectProjects = createSelector(
@@ -343,7 +355,7 @@ export const selectProjects = createSelector(
       return [];
     }
     return eventsWithProjects[1];
-  }
+  },
 );
 
 /**
@@ -356,7 +368,7 @@ export const selectSelected = createSelector(
       return [];
     }
     return selected.map(insetSourceFrom(sources));
-  }
+  },
 );
 
 export const selectDimensions = createSelector(
@@ -366,7 +378,7 @@ export const selectDimensions = createSelector(
       ...dimensions,
       trackHeight: dimensions.contentHeight - 50, // height of time labels
     };
-  }
+  },
 );
 
 export const selectFilterPathToIdMapping = createSelector(
@@ -376,21 +388,21 @@ export const selectFilterPathToIdMapping = createSelector(
       acc[createFilterPathString(curr)] = curr.id;
       return acc;
     }, {});
-  }
+  },
 );
 
 export const selectActiveColorSets = createSelector(
   [getColoringSet, selectFilterPathToIdMapping],
   (set, mapping) => {
     return set.map((set) => mapFiltersToIds(set, mapping).join(","));
-  }
+  },
 );
 
 export const selectActiveFilterIds = createSelector(
   [getActiveFilters, selectFilterPathToIdMapping],
   (filters, mapping) => {
     return mapFiltersToIds(filters, mapping);
-  }
+  },
 );
 
 function mapFiltersToIds(arr, filterMapping) {

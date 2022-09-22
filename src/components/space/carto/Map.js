@@ -34,15 +34,6 @@ import {
 const supportedMapboxMap = ["streets", "satellite"];
 const defaultToken = "your_token";
 
-const searchAttributes = ["description", "location"];
-const getFilteredEvents = (events = [], queryString = "") => {
-  return events.filter((event) =>
-    searchAttributes.some((attribute) =>
-      event[attribute].toLowerCase().includes(queryString.toLowerCase()),
-    ),
-  );
-};
-
 class Map extends React.Component {
   constructor() {
     super();
@@ -585,7 +576,6 @@ function mapStateToProps(state) {
         isFetchingDomain: state.app.flags.isFetchingDomain,
       },
       markers: state.app.markers,
-      searchQuery: state.app.searchQuery,
     },
     ui: {
       tiles: selectors.getTiles(state),
