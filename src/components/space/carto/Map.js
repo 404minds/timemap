@@ -26,7 +26,7 @@ import {
   isLatitude,
   isLongitude,
   calculateTotalClusterPoints,
-  calcClusterSize,
+  calcClusterSize
 } from "../../../common/utilities";
 
 // NB: important constants for map, TODO: make statics
@@ -49,7 +49,7 @@ class Map extends React.Component {
       mapTransformX: 0,
       mapTransformY: 0,
       indexLoaded: false,
-      clusters: [],
+      clusters: []
     };
     this.styleLocation = this.styleLocation.bind(this);
   }
@@ -95,9 +95,9 @@ class Map extends React.Component {
             {
               animate: true,
               pan: {
-                duration: 0.7,
-              },
-            },
+                duration: 0.7
+              }
+            }
           );
         }
       }
@@ -194,7 +194,7 @@ class Map extends React.Component {
       bounds.getWest(),
       bounds.getSouth(),
       bounds.getEast(),
-      bounds.getNorth(),
+      bounds.getNorth()
     ];
     const zoom = this.map.getZoom();
     return [bbox, zoom];
@@ -204,7 +204,7 @@ class Map extends React.Component {
     const [bbox, zoom] = this.getMapDetails();
     if (this.superclusterIndex && this.state.indexLoaded) {
       this.setState({
-        clusters: this.superclusterIndex.getClusters(bbox, zoom),
+        clusters: this.superclusterIndex.getClusters(bbox, zoom)
       });
     }
   }
@@ -219,12 +219,12 @@ class Map extends React.Component {
             type: "Feature",
             properties: {
               cluster: false,
-              id: loc.label,
+              id: loc.label
             },
             geometry: {
               type: "Point",
-              coordinates: [longitude, latitude],
-            },
+              coordinates: [longitude, latitude]
+            }
           };
           acc.push(feature);
         }
@@ -245,7 +245,7 @@ class Map extends React.Component {
         const children = this.superclusterIndex.getLeaves(
           clusterId,
           Infinity,
-          0,
+          0
         );
         return mapClustersToLocations(children, this.props.domain.locations);
       } catch (err) {
@@ -292,7 +292,7 @@ class Map extends React.Component {
     // Offset with leaflet map transform boundaries
     this.setState({
       mapTransformX: +transform.split(",")[4],
-      mapTransformY: +transform.split(",")[5].split(")")[0],
+      mapTransformY: +transform.split(",")[5].split(")")[0]
     });
   }
 
@@ -300,19 +300,19 @@ class Map extends React.Component {
     const latLng = new L.LatLng(location[0], location[1]);
     return {
       x: this.map.latLngToLayerPoint(latLng).x + this.state.mapTransformX,
-      y: this.map.latLngToLayerPoint(latLng).y + this.state.mapTransformY,
+      y: this.map.latLngToLayerPoint(latLng).y + this.state.mapTransformY
     };
   }
 
   onClusterSelect({ id, latitude, longitude }) {
     const expansionZoom = Math.max(
       this.superclusterIndex.getClusterExpansionZoom(parseInt(id)),
-      this.superclusterIndex.options.minZoom,
+      this.superclusterIndex.options.minZoom
     );
     const zoomLevelsToSkip = 2;
     const zoomToFly = Math.max(
       expansionZoom + zoomLevelsToSkip,
-      this.props.app.cluster.maxZoom,
+      this.props.app.cluster.maxZoom
     );
     this.map.flyTo(new L.LatLng(latitude, longitude), zoomToFly);
   }
@@ -324,7 +324,7 @@ class Map extends React.Component {
 
     return {
       width: boundingClient.width,
-      height: boundingClient.height,
+      height: boundingClient.height
     };
   }
 
@@ -340,7 +340,7 @@ class Map extends React.Component {
           height={height}
           style={{
             transform: `translate3d(${-this.state.mapTransformX}px, ${-this
-              .state.mapTransformY}px, 0)`,
+              .state.mapTransformY}px, 0)`
           }}
           className="leaflet-svg"
         />
@@ -412,12 +412,11 @@ class Map extends React.Component {
     */
 
     const individualClusters = this.state.clusters.filter(
-      (cl) => !cl.properties.cluster,
+      (cl) => !cl.properties.cluster
     );
-    console.log("this.props.domain.locations: ", this.props.domain.locations);
     const filteredLocations = mapClustersToLocations(
       individualClusters,
-      this.props.domain.locations,
+      this.props.domain.locations
     );
 
     return (
@@ -443,7 +442,7 @@ class Map extends React.Component {
 
   renderClusters() {
     const allClusters = this.state.clusters.filter(
-      (cl) => cl.properties.cluster,
+      (cl) => cl.properties.cluster
     );
     return (
       <Clusters
@@ -470,7 +469,7 @@ class Map extends React.Component {
         id,
         latitude,
         longitude,
-        radius: this.props.ui.eventRadius,
+        radius: this.props.ui.eventRadius
       });
     });
 
@@ -484,10 +483,7 @@ class Map extends React.Component {
           id: cl.id,
           latitude: String(coordinates[1]),
           longitude: String(coordinates[0]),
-          radius: calcClusterSize(
-            cl.properties.point_count,
-            totalClusterPoints,
-          ),
+          radius: calcClusterSize(cl.properties.point_count, totalClusterPoints)
         });
       }
     });
@@ -559,7 +555,7 @@ function mapStateToProps(state) {
       narratives: selectors.selectNarratives(state),
       categories: selectors.getCategories(state),
       sites: selectors.selectSites(state),
-      regions: selectors.selectRegions(state),
+      regions: selectors.selectRegions(state)
     },
     app: {
       views: state.app.associations.views,
@@ -573,9 +569,9 @@ function mapStateToProps(state) {
       coloringSet: state.app.associations.coloringSet,
       flags: {
         isShowingSites: state.app.flags.isShowingSites,
-        isFetchingDomain: state.app.flags.isFetchingDomain,
+        isFetchingDomain: state.app.flags.isFetchingDomain
       },
-      markers: state.app.markers,
+      markers: state.app.markers
     },
     ui: {
       tiles: selectors.getTiles(state),
@@ -585,15 +581,15 @@ function mapStateToProps(state) {
       regions: state.ui.style.regions,
       eventRadius: state.ui.eventRadius,
       radial: state.ui.style.clusters.radial,
-      filterColors: state.ui.coloring.colors,
+      filterColors: state.ui.coloring.colors
     },
-    features: selectors.getFeatures(state),
+    features: selectors.getFeatures(state)
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(actions, dispatch)
   };
 }
 
