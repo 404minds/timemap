@@ -498,7 +498,6 @@ function mapStateToProps(state) {
       selected: state.app.selected,
       language: state.app.language,
       timeline: state.app.timeline,
-      searchQuery: state.app.searchQuery,
       narrative: state.app.associations.narrative,
       coloringSet: state.app.associations.coloringSet,
     },
