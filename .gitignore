@@ -6,6 +6,7 @@ node_modules/
 dev.config.js
 !config/webpack*.config.js
 !config/getHttpsConfig.js
+!prettier.config.js
 
 
 tags

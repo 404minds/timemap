@@ -41,6 +41,7 @@ export const selectNarrative = (state) => state.app.associations.narrative;
 export const getFeatures = (state) => state.features;
 export const getEventRadius = (state) => state.ui.eventRadius;
 export const getTiles = (state) => state.ui.tiles.current;
+export const getSearchQuery = (state) => state.app.searchQuery;
 
 export const selectSites = createSelector(
   [getSites, getFeatures],
@@ -68,6 +69,15 @@ export const selectRegions = createSelector(
   }
 );
 
+const searchAttributes = ["description", "location"];
+const getFilteredEvents = (events = [], queryString = "") => {
+  return events.filter((event) =>
+    searchAttributes.some((attribute) =>
+      event[attribute].toLowerCase().includes(queryString.toLowerCase())
+    )
+  );
+};
+
 /**
  * Of all available events, selects those that
  * 1. fall in time range
@@ -82,6 +92,7 @@ export const selectEvents = createSelector(
     getActiveShapes,
     getTimeRange,
     getFeatures,
+    getSearchQuery,
   ],
   (
     events,
@@ -89,43 +100,50 @@ export const selectEvents = createSelector(
     activeCategories,
     activeShapes,
     timeRange,
-    features
+    features,
+    searchQuery
   ) => {
-    return events.reduce((acc, event) => {
-      const isMatchingFilter =
-        (event.associations &&
-          event.associations
-            .filter((a) => a.mode === ASSOCIATION_MODES.FILTER)
-            .map((association) =>
-              activeFilters.includes(createFilterPathString(association))
-            )
-            .some((s) => s)) ||
-        activeFilters.length === 0;
-      const isActiveFilter = isMatchingFilter || activeFilters.length === 0;
-      const isActiveCategory =
-        (event.associations &&
-          event.associations
-            .filter((a) => a.mode === ASSOCIATION_MODES.CATEGORY)
-            .map((association) => activeCategories.includes(association.title))
-            .some((s) => s)) ||
-        activeCategories.length === 0;
-      let isActiveTime = isTimeRangedIn(event, timeRange);
-      isActiveTime = features.GRAPH_NONLOCATED
-        ? (!event.latitude && !event.longitude) || isActiveTime
-        : isActiveTime;
-      const isActiveShape =
-        event.shape && activeShapes.includes(event.shape.id);
-      if (event.type === SHAPE) {
-        if (isActiveShape && isActiveCategory && isActiveTime) {
-          acc[event.id] = { ...event };
+    return getFilteredEvents(
+      events.reduce((acc, event) => {
+        const isMatchingFilter =
+          (event.associations &&
+            event.associations
+              .filter((a) => a.mode === ASSOCIATION_MODES.FILTER)
+              .map((association) =>
+                activeFilters.includes(createFilterPathString(association))
+              )
+              .some((s) => s)) ||
+          activeFilters.length === 0;
+        const isActiveFilter = isMatchingFilter || activeFilters.length === 0;
+        const isActiveCategory =
+          (event.associations &&
+            event.associations
+              .filter((a) => a.mode === ASSOCIATION_MODES.CATEGORY)
+              .map((association) =>
+                activeCategories.includes(association.title)
+              )
+              .some((s) => s)) ||
+          activeCategories.length === 0;
+        let isActiveTime = isTimeRangedIn(event, timeRange);
+        isActiveTime = features.GRAPH_NONLOCATED
+          ? (!event.latitude && !event.longitude) || isActiveTime
+          : isActiveTime;
+        const isActiveShape =
+          event.shape && activeShapes.includes(event.shape.id);
+        if (event.type === SHAPE) {
+          if (isActiveShape && isActiveCategory && isActiveTime) {
+            acc[event.id] = { ...event };
+          }
+        } else {
+          if (isActiveFilter && isActiveCategory && isActiveTime) {
+            acc[event.id] = { ...event };
+          }
         }
-      } else {
-        if (isActiveFilter && isActiveCategory && isActiveTime) {
-          acc[event.id] = { ...event };
-        }
-      }
-      return acc;
-    }, []);
+
+        return acc;
+      }, []),
+      searchQuery
+    );
   }
 );
 

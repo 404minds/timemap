@@ -19,7 +19,10 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
         const { x, y } = projectPoint([marker.latitude, marker.longitude]);
 
         const styles = {};
-        if (seletedEventDate.isAfter(dayjs(marker.enddate, "MM/DD/YYYY"))) {
+        if (
+          seletedEventDate &&
+          seletedEventDate.isAfter(dayjs(marker.enddate, "MM/DD/YYYY"))
+        ) {
           styles.stroke = "yellow";
           styles["stroke-width"] = 2;
           styles["stroke-dasharray"] = "2,2";
