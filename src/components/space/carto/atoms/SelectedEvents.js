@@ -33,6 +33,7 @@ class MapSelectedEvents extends React.Component {
   }
 
   render() {
+    console.log("this.props.selected: ", this.props.selected);
     return (
       <Portal node={this.props.svg}>
         {this.props.selected.map((s) => this.renderMarker(s))}

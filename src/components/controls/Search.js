@@ -4,14 +4,13 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../actions";
 
-import SearchRow from "./atoms/SearchRow.jsx";
-
 class Search extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isFolded: true,
+      searchText: "",
     };
     this.onButtonClick = this.onButtonClick.bind(this);
     this.updateSearchQuery = this.updateSearchQuery.bind(this);
@@ -23,34 +22,12 @@ class Search extends React.Component {
     });
   }
 
-  updateSearchQuery(e) {
-    const queryString = e.target.value;
-    this.props.actions.updateSearchQuery(queryString);
+  updateSearchQuery() {
+    this.props.actions.updateSearchQuery(this.state.searchText);
+    this.props.actions.updateSelected([]);
   }
 
   render() {
-    let searchResults;
-
-    const searchAttributes = ["description", "location"];
-    // const searchAttributes = ["description", "location", "category", "date"];
-
-    if (!this.props.queryString) {
-      searchResults = [];
-    } else {
-      searchResults = this.props.events.filter((event) =>
-        searchAttributes.some((attribute) =>
-          event[attribute]
-            .toLowerCase()
-            .includes(this.props.queryString.toLowerCase())
-        )
-      );
-
-      // this code works well
-      // searchResults = this.props.events.filter((event)=>{
-      //   return event["description"].toLowerCase().includes(this.props.queryString.toLowerCase())
-      // });
-    }
-
     return (
       <div
         className={
@@ -66,13 +43,8 @@ class Search extends React.Component {
             "search-bar-overlay" + (this.state.isFolded ? " folded" : "")
           }
         >
-          <div className="search-input-container">
-            <input
-              className="search-bar-input"
-              onChange={this.updateSearchQuery}
-              type="text"
-              placeholder="Search for location and description..."
-            />
+          <div className="search-bar-header">
+            <h3 className="search-bar-title">Find incidents</h3>
             <i
               id="close-search-overlay"
               className="material-icons"
@@ -81,16 +53,36 @@ class Search extends React.Component {
               close
             </i>
           </div>
-          <div className="search-results">
-            {searchResults.map((result) => {
-              return (
-                <SearchRow
-                  onSearchRowClick={this.props.onSearchRowClick}
-                  eventObj={result}
-                  query={this.props.queryString}
-                />
-              );
-            })}
+          <div className="search-bar-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+
+                this.updateSearchQuery();
+              }}
+            >
+              <input
+                className="search-bar-input"
+                onChange={(e) => {
+                  this.setState(
+                    {
+                      searchText: e.target.value,
+                    },
+                    () => {
+                      if (!this.state.searchText) {
+                        this.updateSearchQuery();
+                      }
+                    }
+                  );
+                }}
+                value={this.state.searchText}
+                type="text"
+                placeholder="Search location & description..."
+              />
+              <button type="submit" className="search-bar-button">
+                Find
+              </button>
+            </form>
           </div>
         </div>
       </div>
