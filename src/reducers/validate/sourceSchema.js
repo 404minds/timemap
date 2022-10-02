@@ -6,6 +6,7 @@ const sourceSchema = Joi.object().keys({
   thumbnail: Joi.string().allow(""),
   paths: Joi.array().required(),
   type: Joi.string().allow(""),
+  types: Joi.array(),
   affil_s: Joi.array().allow(""),
   url: Joi.string().allow(""),
   description: Joi.string().allow(""),

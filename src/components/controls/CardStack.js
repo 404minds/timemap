@@ -192,7 +192,8 @@ class CardStack extends React.Component {
                             }}
                           >
                             {/* {eachSource?.id} */}
-                            {"Source" + (i + 1)}
+                            {/* {"Source" + (i + 1)} */}
+                            {eachSource?.types[i] || "Source" + (i + 1)}
                             {/* {eachSource?.id + "-" + (i+1)} */}
                           </a>
                         ))}
