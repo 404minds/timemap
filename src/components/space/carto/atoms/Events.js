@@ -22,7 +22,6 @@ function MapEvents({
   eventRadius,
   coloringSet,
   filterColors,
-  features,
 }) {
   function handleEventSelect(e, location) {
     const events = e.shiftKey

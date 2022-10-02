@@ -504,13 +504,12 @@ class Map extends React.Component {
 
   renderMarkers() {
     return (
-      <Portal node={this.svgRef.current}>
-        <DefsMarkers
-          markers={this.props.app.markers}
-          projectPoint={this.projectPoint}
-          narrative={this.props.app.narrative}
-        />
-      </Portal>
+      <DefsMarkers
+        svg={this.svgRef.current}
+        markers={this.props.app.markers}
+        projectPoint={this.projectPoint}
+        narrative={this.props.app.narrative}
+      />
     );
   }
 
