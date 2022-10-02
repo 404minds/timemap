@@ -62,7 +62,6 @@ export const generateCardLayout = {
           kind: "media",
           title: "Media",
           value: [{ src: p, title: "SOURCES" }],
-          value: [{ src: p, title: null }],
         })),
       ]),
     ];
