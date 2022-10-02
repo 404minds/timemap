@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import dayjs from "dayjs";
+import { marked } from "marked";
 import { generateCardLayout, Card } from "./Card";
 
 import * as selectors from "../../selectors";
@@ -162,7 +163,11 @@ class CardStack extends React.Component {
               <div className="card-row">
                 <div className="card-cell">
                   <h4>Summary</h4>
-                  {event?.description}
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: marked(event?.description),
+                    }}
+                  />
                 </div>
               </div>
               <div className="card-row">
