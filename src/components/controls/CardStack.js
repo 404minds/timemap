@@ -191,9 +191,9 @@ class CardStack extends React.Component {
                             href={eachPath}
                             style={{
                               margin: "3px",
-                              "border-radius": 12,
+                              "border-radius": 6,
                               border: "2px solid #808080",
-                              padding: "3px",
+                              padding: "4px 8px",
                             }}
                           >
                             {/* {eachSource?.id} */}
