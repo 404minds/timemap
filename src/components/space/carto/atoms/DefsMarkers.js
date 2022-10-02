@@ -24,8 +24,8 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
           seletedEventDate.isAfter(dayjs(marker.enddate, "MM/DD/YYYY"))
         ) {
           styles.stroke = "yellow";
-          styles["stroke-width"] = 2;
-          styles["stroke-dasharray"] = "2,2";
+          styles["strokeWidth"] = 2;
+          styles["strokeDasharray"] = "2,2";
           styles["strokeLinejoin"] = "round";
         } else {
           styles.fill = "yellow";
@@ -33,7 +33,7 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
         }
 
         return (
-          <svg>
+          <svg key={marker.id}>
             <g
               className={`location-event ${narrative ? "no-hover" : ""}`}
               transform={`translate(${x}, ${y})`}

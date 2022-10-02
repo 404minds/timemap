@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { Player } from "video-react";
 import { marked } from "marked";
 import MediaOverlay from "./atoms/Media";
-// import falogo from "../assets/fa-logo.png";
-import bcatlogo from "../assets/bellingcat-logo.png";
+
 const MEDIA_HIDDEN = -2;
 
 /**

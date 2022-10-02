@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { drag as d3Drag, select } from "d3";
 
 class TimelineCategories extends React.Component {
@@ -23,7 +23,7 @@ class TimelineCategories extends React.Component {
     }
   }
 
-  renderCategory(cat, idx) {
+  renderCategory(cat) {
     const { features, dims } = this.props;
     const strokeWidth = 1; // dims.trackHeight / (this.props.categories.length + 1)
     if (
@@ -35,7 +35,7 @@ class TimelineCategories extends React.Component {
     }
 
     return (
-      <>
+      <Fragment key={cat}>
         <g
           className="tick"
           style={{ strokeWidth }}
@@ -53,7 +53,7 @@ class TimelineCategories extends React.Component {
             {cat}
           </text>
         </g>
-      </>
+      </Fragment>
     );
   }
 

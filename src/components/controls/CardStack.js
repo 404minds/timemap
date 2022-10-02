@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import dayjs from "dayjs";
 import { marked } from "marked";
-import { generateCardLayout, Card } from "./Card";
 
 import * as selectors from "../../selectors";
 import { isValidHttpUrl, typeForPath } from "../../common/utilities";
@@ -56,41 +55,6 @@ class CardStack extends React.Component {
     animateScroll();
   }
 
-  // renderCards(events, selections) {
-  //   // if no selections provided, select all
-  //   console.log(events)
-  //   if (!selections) {
-  //     selections = events.map((e) => true);
-  //   }
-  //   this.refs = [];
-
-  //   const generateTemplate =
-  //   // generateCardLayout["sourced"];
-  //   generateCardLayout[this.props.cardUI.layout.template];
-
-  //   return events.map((event, idx) => {
-  //     const thisRef = React.createRef();
-  //     this.refs[idx] = thisRef;
-
-  //     const content = generateTemplate({
-  //       event,
-  //       colors: this.props.colors,
-  //       coloringSet: this.props.coloringSet,
-  //       getFilterIdxFromColorSet,
-  //     });
-  //     console.log(content)
-  //     return (
-  //       <Card
-  //         key={hash(content)}
-  //         content={content}
-  //         language={this.props.language}
-  //         isLoading={this.props.isLoading}
-  //         isSelected={selections[idx]}
-  //       />
-  //     );
-  //   });
-  // }
-
   renderSourcePath = (path, index) => {
     if (!isValidHttpUrl(path)) return "";
 
@@ -102,12 +66,15 @@ class CardStack extends React.Component {
             <a
               className="c-source"
               target="_default"
-              onClick={() =>
+              href="#Video"
+              onClick={(e) => {
+                e.preventDefault();
+
                 this.setState({
                   showInternalSource: true,
                   selectedSource: path,
-                })
-              }
+                });
+              }}
             >
               Sources {index + 1}
             </a>
@@ -133,8 +100,6 @@ class CardStack extends React.Component {
       selections = events.map((e) => true);
     }
     this.refs = [];
-    const generateTemplate =
-      generateCardLayout[this.props.cardUI.layout.template];
 
     return events.map((event, idx) => {
       const thisRef = React.createRef();
@@ -176,6 +141,7 @@ class CardStack extends React.Component {
                   {event?.sources?.map((eachSource) => {
                     return (
                       <div
+                        key={`sources-${eachSource.id}`}
                         style={{
                           display: "flex",
                           flexDirections: "row",
@@ -187,11 +153,12 @@ class CardStack extends React.Component {
                         {/* <button style={{ "border-radius": 12 }} onclick=")"> */}
                         {eachSource?.paths?.map((eachPath, i) => (
                           <a
+                            key={`source-${eachSource.id}-${i}`}
                             target="blank"
                             href={eachPath}
                             style={{
                               margin: "3px",
-                              "border-radius": 6,
+                              borderRadius: 6,
                               border: "2px solid #808080",
                               padding: "4px 8px",
                             }}

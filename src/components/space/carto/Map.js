@@ -421,6 +421,7 @@ class Map extends React.Component {
 
     return (
       <Events
+        mode="MAP"
         svg={this.svgRef.current}
         events={this.props.domain.events}
         locations={filteredLocations}

@@ -1,6 +1,5 @@
 import React from "react";
 import colors from "../../../common/global";
-import hash from "object-hash";
 import {
   getEventCategories,
   isLatitude,
@@ -67,7 +66,7 @@ const TimelineMarkers = ({
       (features.GRAPH_NONLOCATED && event.projectOffset !== -1);
 
     const evShadows = getEventCategories(event, categories).map((cat) =>
-      getEventY({ ...event, category: cat }),
+      getEventY({ ...event, category: cat })
     );
 
     function renderMarkerForEvent(y) {

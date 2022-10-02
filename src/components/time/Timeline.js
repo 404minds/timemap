@@ -451,6 +451,7 @@ class Timeline extends React.Component {
                 eventRadius={this.props.ui.eventRadius}
               />
               <Events
+                mode="TIMELINE"
                 events={this.props.domain.events}
                 projects={this.props.domain.projects}
                 categories={categories}

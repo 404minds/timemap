@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import DatetimeBar from "./DatetimeBar";
 import DatetimeSquare from "./DatetimeSquare";
 import DatetimeStar from "./DatetimeStar";
@@ -19,7 +19,7 @@ import { AVAILABLE_SHAPES } from "../../../common/constants";
 function renderDot(event, styles, props) {
   const colorPercentages = calculateColorPercentages(
     [event],
-    props.coloringSet,
+    props.coloringSet
   );
   return (
     <g
@@ -32,7 +32,7 @@ function renderDot(event, styles, props) {
         radius={props.eventRadius}
         colorPercentMap={zipColorsToPercentages(
           props.filterColors,
-          colorPercentages,
+          colorPercentages
         )}
         styles={{
           ...styles,
@@ -127,6 +127,7 @@ function renderStar(event, styles, props) {
 }
 
 const TimelineEvents = ({
+  mode = "DEFAULT",
   events,
   projects,
   categories,
@@ -196,23 +197,27 @@ const TimelineEvents = ({
     });
 
     function getRender(y, styles) {
-      return renderShape(event, styles, {
-        x: getDatetimeX(event.datetime),
-        y,
-        eventRadius,
-        onSelect: () => onSelect(event),
-        dims,
-        highlights: features.HIGHLIGHT_GROUPS
-          ? getHighlights(
-              event.filters[
-                features.HIGHLIGHT_GROUPS.filterIndexIndicatingGroup
-              ],
-            )
-          : [],
-        features,
-        filterColors,
-        coloringSet,
-      });
+      return (
+        <Fragment key={`${mode}-event-${event.id}-shadow-${y}`}>
+          {renderShape(event, styles, {
+            x: getDatetimeX(event.datetime),
+            y,
+            eventRadius,
+            onSelect: () => onSelect(event),
+            dims,
+            highlights: features.HIGHLIGHT_GROUPS
+              ? getHighlights(
+                  event.filters[
+                    features.HIGHLIGHT_GROUPS.filterIndexIndicatingGroup
+                  ]
+                )
+              : [],
+            features,
+            filterColors,
+            coloringSet,
+          })}
+        </Fragment>
+      );
     }
 
     if (evShadows.length === 0) {
@@ -222,6 +227,7 @@ const TimelineEvents = ({
         acc.push(getRender(evShadow.y, evShadow.styles));
       });
     }
+
     return acc;
   }
 
