@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 
 const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
@@ -33,16 +33,21 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
         }
 
         return (
-          <svg key={marker.id}>
-            <g
-              className={`location-event ${narrative ? "no-hover" : ""}`}
-              transform={`translate(${x}, ${y})`}
-            >
-              {/* <circle cx="0" cy="0" r="10" stroke="black" stroke-width="2"  */}
-              {/* fill= {marker.enddate>=today?"yellow":"none"} stroke-opacity="0.8" fill-opacity="0.8"/> */}
-              <rect width="14" height="14" {...styles} />
-            </g>
-          </svg>
+          <Fragment key={marker.id}>
+            <svg>
+              <g
+                className={`location-event ${narrative ? "no-hover" : ""}`}
+                transform={`translate(${x}, ${y})`}
+              >
+                {/* <circle cx="0" cy="0" r="10" stroke="black" stroke-width="2"  */}
+                {/* fill= {marker.enddate>=today?"yellow":"none"} stroke-opacity="0.8" fill-opacity="0.8"/> */}
+                <rect width="8" height="8" {...styles} />
+                <text fill="yellow" x={12} y={8}>
+                  {marker.title}
+                </text>
+              </g>
+            </svg>
+          </Fragment>
         );
       })}
     </>
