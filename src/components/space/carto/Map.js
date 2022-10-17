@@ -89,16 +89,12 @@ class Map extends React.Component {
           eventPoint.longitude
         ) {
           // this.map.setView([eventPoint.latitude, eventPoint.longitude])
-          this.map.setView(
-            [eventPoint.latitude, eventPoint.longitude],
-            this.map.getZoom(),
-            {
-              animate: true,
-              pan: {
-                duration: 0.7,
-              },
-            }
-          );
+          this.map.setView([eventPoint.latitude, eventPoint.longitude], 16, {
+            animate: true,
+            pan: {
+              duration: 0.7,
+            },
+          });
         }
       }
     }
