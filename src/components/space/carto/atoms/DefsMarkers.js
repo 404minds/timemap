@@ -4,7 +4,7 @@ import { Portal } from "react-portal";
 import { connect } from "react-redux";
 import hash from "object-hash";
 
-const MapDefsMarkers = ({ markers, projectPoint, narrative, app, svg }) => {
+function MapDefsMarkers({ markers, projectPoint, narrative, app, svg }) {
   if (markers === undefined) return null;
 
   const { selected } = app;
@@ -15,7 +15,9 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app, svg }) => {
     seletedEventDate = dayjs(`${selected[0].date} ${selected[0].time}`);
   }
 
-  const renderMarker = (marker) => {
+  function renderMarker(marker) {
+    if (!marker.latitude || !marker.longitude) return null;
+
     const { x, y } = projectPoint([marker.latitude, marker.longitude]);
 
     const styles = {};
@@ -33,7 +35,7 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app, svg }) => {
     }
 
     return (
-      <svg key={hash([marker.latitude, marker.longitude])}>
+      <svg key={hash(marker)}>
         <g
           className={`location-event ${narrative ? "no-hover" : ""}`}
           transform={`translate(${x}, ${y})`}
@@ -45,7 +47,7 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app, svg }) => {
         </g>
       </svg>
     );
-  };
+  }
 
   return (
     <Portal node={svg}>
@@ -54,20 +56,6 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app, svg }) => {
       </svg>
     </Portal>
   );
-};
-
-function mapStateToProps(state) {
-  return {
-    app: {
-      selected: state.app.selected,
-    },
-  };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: {},
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(MapDefsMarkers);
+export default MapDefsMarkers;

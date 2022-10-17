@@ -509,6 +509,7 @@ class Map extends React.Component {
         markers={this.props.app.markers}
         projectPoint={this.projectPoint}
         narrative={this.props.app.narrative}
+        app={this.props.app}
       />
     );
   }
