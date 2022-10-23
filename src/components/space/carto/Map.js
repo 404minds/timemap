@@ -89,16 +89,12 @@ class Map extends React.Component {
           eventPoint.longitude
         ) {
           // this.map.setView([eventPoint.latitude, eventPoint.longitude])
-          this.map.setView(
-            [eventPoint.latitude, eventPoint.longitude],
-            this.map.getZoom(),
-            {
-              animate: true,
-              pan: {
-                duration: 0.7,
-              },
-            }
-          );
+          this.map.setView([eventPoint.latitude, eventPoint.longitude], 16, {
+            animate: true,
+            pan: {
+              duration: 0.7,
+            },
+          });
         }
       }
     }
@@ -504,13 +500,13 @@ class Map extends React.Component {
 
   renderMarkers() {
     return (
-      <Portal node={this.svgRef.current}>
-        <DefsMarkers
-          markers={this.props.app.markers}
-          projectPoint={this.projectPoint}
-          narrative={this.props.app.narrative}
-        />
-      </Portal>
+      <DefsMarkers
+        svg={this.svgRef.current}
+        markers={this.props.app.markers}
+        projectPoint={this.projectPoint}
+        narrative={this.props.app.narrative}
+        app={this.props.app}
+      />
     );
   }
 

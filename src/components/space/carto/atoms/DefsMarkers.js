@@ -1,8 +1,10 @@
 import dayjs from "dayjs";
-import React, { Fragment } from "react";
+import React from "react";
+import { Portal } from "react-portal";
 import { connect } from "react-redux";
+import hash from "object-hash";
 
-const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
+function MapDefsMarkers({ markers, projectPoint, narrative, app, svg }) {
   if (markers === undefined) return null;
 
   const { selected } = app;
@@ -13,59 +15,47 @@ const MapDefsMarkers = ({ markers, projectPoint, narrative, app }) => {
     seletedEventDate = dayjs(`${selected[0].date} ${selected[0].time}`);
   }
 
+  function renderMarker(marker) {
+    if (!marker.latitude || !marker.longitude) return null;
+
+    const { x, y } = projectPoint([marker.latitude, marker.longitude]);
+
+    const styles = {};
+    if (
+      seletedEventDate &&
+      seletedEventDate.isAfter(dayjs(marker.enddate, "MM/DD/YYYY"))
+    ) {
+      styles.stroke = "yellow";
+      styles["strokeWidth"] = 2;
+      styles["strokeDasharray"] = "2,2";
+      styles["strokeLinejoin"] = "round";
+    } else {
+      styles.fill = "yellow";
+      styles["fill-opacity"] = "0.8";
+    }
+
+    return (
+      <svg key={hash(marker)}>
+        <g
+          className={`location-event ${narrative ? "no-hover" : ""}`}
+          transform={`translate(${x}, ${y})`}
+        >
+          <rect width="8" height="8" {...styles} />
+          <text fill="yellow" x={12} y={8}>
+            {marker.title}
+          </text>
+        </g>
+      </svg>
+    );
+  }
+
   return (
-    <>
-      {markers.map((marker) => {
-        const { x, y } = projectPoint([marker.latitude, marker.longitude]);
-
-        const styles = {};
-        if (
-          seletedEventDate &&
-          seletedEventDate.isAfter(dayjs(marker.enddate, "MM/DD/YYYY"))
-        ) {
-          styles.stroke = "yellow";
-          styles["strokeWidth"] = 2;
-          styles["strokeDasharray"] = "2,2";
-          styles["strokeLinejoin"] = "round";
-        } else {
-          styles.fill = "yellow";
-          styles["fill-opacity"] = "0.8";
-        }
-
-        return (
-          <Fragment key={marker.id}>
-            <svg>
-              <g
-                className={`location-event ${narrative ? "no-hover" : ""}`}
-                transform={`translate(${x}, ${y})`}
-              >
-                {/* <circle cx="0" cy="0" r="10" stroke="black" stroke-width="2"  */}
-                {/* fill= {marker.enddate>=today?"yellow":"none"} stroke-opacity="0.8" fill-opacity="0.8"/> */}
-                <rect width="8" height="8" {...styles} />
-                <text fill="yellow" x={12} y={8}>
-                  {marker.title}
-                </text>
-              </g>
-            </svg>
-          </Fragment>
-        );
-      })}
-    </>
+    <Portal node={svg}>
+      <svg>
+        <g className="event-locations">{markers.map(renderMarker)}</g>
+      </svg>
+    </Portal>
   );
-};
-
-function mapStateToProps(state) {
-  return {
-    app: {
-      selected: state.app.selected,
-    },
-  };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: {},
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(MapDefsMarkers);
+export default MapDefsMarkers;
