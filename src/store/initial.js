@@ -78,7 +78,7 @@ const initial = {
         ticks: 15,
         height: isSmallLaptop ? 170 : 250,
         width: 0,
-        marginLeft: 70,
+        marginLeft: 100,
         marginTop: isSmallLaptop ? 5 : 10, // the padding used for the day/month labels inside the timeline
         marginBottom: 60,
         contentHeight: isSmallLaptop ? 160 : 200,
